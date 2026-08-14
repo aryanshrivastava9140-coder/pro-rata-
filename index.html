@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>❤️</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    canvas {
+        width: 100vw;
+        height: 100vh;
+        display: block;
+    }
+</style>
+</head>
+
+<body>
+
+<canvas id="heart"></canvas>
+
+<script>
+const canvas = document.getElementById("heart");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth * devicePixelRatio;
+    canvas.height = window.innerHeight * devicePixelRatio;
+
+    ctx.setTransform(
+        devicePixelRatio, 0, 0, devicePixelRatio, 0, 0
+    );
+}
+
+resize();
+window.addEventListener("resize", resize);
+
+const text = "I love you";
+const fontSize = Math.max(6, Math.min(10, window.innerWidth / 45));
+
+ctx.font = `bold ${fontSize}px Arial`;
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+let points = [];
+
+// Create several heart outlines
+for (let scale = 10; scale <= 17; scale += 0.35) {
+
+    for (let i = 0; i < 120; i++) {
+
+        const angle = (i * Math.PI * 2) / 120;
+
+        const x =
+            16 * Math.pow(Math.sin(angle), 3) * scale;
+
+        const y =
+            (
+                13 * Math.cos(angle)
+                - 5 * Math.cos(2 * angle)
+                - 2 * Math.cos(3 * angle)
+                - Math.cos(4 * angle)
+            ) * scale;
+
+        points.push({
+            x: x,
+            y: -y
+        });
+    }
+}
+
+let index = 0;
+
+function animate() {
+
+    if (index >= points.length) {
+        return;
+    }
+
+    const centerX = canvas.width / devicePixelRatio / 2;
+    const centerY = canvas.height / devicePixelRatio / 2;
+
+    const p = points[index];
+
+    // Scale everything down so it fits on a phone
+    const fit = Math.min(
+        window.innerWidth / 650,
+        window.innerHeight / 650
+    );
+
+    const x = centerX + p.x * fit;
+    const y = centerY + p.y * fit;
+
+    ctx.fillStyle = "#ffb6c9";
+
+    ctx.fillText(text, x, y);
+
+    index++;
+
+    // Speed of formation
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
